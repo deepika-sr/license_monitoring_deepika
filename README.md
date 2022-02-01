@@ -15,12 +15,12 @@ first install all the packages
 
 Broker configurations
 ---
-Broker configurations are maintained in the config.yml file.
+Broker configurations are maintained in the _**config.yml**_ file.
 
 
 How to run the component 
 ---
-!!! Before running make sure the credentials entered in  _**config.yml**_  are correct!!!
+_**!!! Before running make sure the credentials entered in config.yml are correct!!!**_
 
 To run the code Just execute the following 
 ~~~
