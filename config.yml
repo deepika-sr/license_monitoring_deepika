@@ -1,0 +1,25 @@
+---
+'client':
+  'client_id': 'client1'
+
+'security':
+  'security_protocol': 'SASL_SSL'
+  'ssl_check_hostname': False
+  'sasl_mechanism': 'SCRAM-SHA-256'
+  'sasl_plain_username': '????'  # add account username
+  'sasl_plain_password': '??????' # add account password
+'clusters':
+  - 'name': 'PERF'
+    'hosts':
+      - 'CKFPLPC1PRFB01.amer.dell.com:9092'
+      - 'CKFPLPC1PRFB02.amer.dell.com:9092'
+  - 'name': 'SRS'
+    'hosts':
+      - 'ckfpls3bsrsb01.amer.dell.com:9092'
+  - 'name': 'DFS'
+    'hosts':
+      - 'ckfnlr2cdfsb01.amer.dell.com:9092'
+  - 'name': 'COMIT-PERF-APJ'
+    'hosts':
+      - 'ckfnlr2capcmtb4.amer.dell.com:9092'
+    

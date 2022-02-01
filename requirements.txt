@@ -1,0 +1,8 @@
+cffi==1.15.0
+cryptography==36.0.1
+kafka-python==2.0.2
+lz4==3.1.10
+prometheus-client==0.12.0
+pycparser==2.21
+PyJWT==2.3.0
+PyYAML==6.0
