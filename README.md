@@ -20,7 +20,7 @@ Broker configurations are maintained in the config.yml file.
 
 How to run the component 
 ---
-!!! Before running make sure the credentials entered in config.yml are correct!!!
+!!! Before running make sure the credentials entered in  _**config.yml**_  are correct!!!
 
 To run the code Just execute the following 
 ~~~
@@ -28,8 +28,8 @@ To run the code Just execute the following
 ~~~
 Testing
 ---
-once the component sharts ruinning, it opens a http server in the local host at port nr 8000.
-check in your browse http://localhost:8000/metrics
+once the component sharts ruinning, it opens a http server at port nr 8000.
+check in your browse http://<hostaddress>:8000/metrics
 
 
 Trouble shooting
