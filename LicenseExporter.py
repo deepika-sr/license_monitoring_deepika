@@ -7,8 +7,8 @@ from kafka import KafkaConsumer
 import config_reader as config
 import logging
 
-logging.basicConfig( encoding='utf-8', level=logging.ERROR)
-# A status value used to indicate unable to read license 
+logging.basicConfig(level=logging.ERROR)
+# A status value used to indicate unable to read license
 UNAVAILABLE = -255
 
 LICENSE_INFO = Gauge('license_expiry_in_days',
@@ -16,6 +16,8 @@ LICENSE_INFO = Gauge('license_expiry_in_days',
 
 # This takes individual license message from __confluent-command topic
 # and parses the value part of the JWT and decode into a dict
+
+
 def decode_license(message):
     encoded_license = base64.b64decode(message.value)
     license_string = encoded_license.decode("utf-8")
@@ -42,7 +44,7 @@ def export_license(client, security, name, bootstrap_servers):
                 break
 
         host = bootstrap_servers[0]
-        # Check if a response was received 
+        # Check if a response was received
         if (license_dict['exp'] != UNAVAILABLE):
             expires_on = datetime.datetime.utcfromtimestamp(
                 license_dict['exp'])
