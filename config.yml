@@ -1,25 +1,70 @@
 ---
 'client':
   'client_id': 'client1'
-
 'security':
   'security_protocol': 'SASL_SSL'
   'ssl_check_hostname': False
   'sasl_mechanism': 'SCRAM-SHA-256'
-  'sasl_plain_username': '????'  # add account username
-  'sasl_plain_password': '??????' # add account password
+  'sasl_plain_username': 'xxxx'  # add account username
+  'sasl_plain_password': 'xxxxxx' # add account password
 'clusters':
-  - 'name': 'PERF'
+  - 'name': 'perf'
     'hosts':
       - 'CKFPLPC1PRFB01.amer.dell.com:9092'
       - 'CKFPLPC1PRFB02.amer.dell.com:9092'
-  - 'name': 'SRS'
+  # - 'name': 'COMIT-PERF-APJ'
+  #   'hosts':
+  #     - 'ckfnlr2capcmtb4.amer.dell.com:9092'
+  - 'name': 'poc_upgrade'
     'hosts':
-      - 'ckfpls3bsrsb01.amer.dell.com:9092'
-  - 'name': 'DFS'
+      - 'ckfnlr2cpocb001.us.dell.com:9092'
+      - 'ckfnlr2cpocb002.us.dell.com:9092'
+  - 'name': 'dtc_stg'
+    'hosts':
+      - 'ckfplpc1sdtcb01.us.dell.com:9092'
+      - 'ckfplpc1sdtcb02.us.dell.com:9092'
+  - 'name': 'itp_apj_sit'
+    'hosts':
+      - 'ckfnlr2csipab01.amer.dell.com:9092'
+      - 'ckfnlr2csipab02.amer.dell.com:9092'
+  - 'name': 'itp_apj_prf'
+    'hosts':
+      - 'ckfnlr2cpipab01.amer.dell.com:9092'
+      - 'ckfnlr2cpipab02.amer.dell.com:9092'
+  - 'name': 'itp_emea_sit'
+    'hosts':
+      - 'ckfnlr2csipeb01.amer.dell.com:9092'
+      - 'ckfnlr2csipeb02.amer.dell.com:9092'
+  - 'name': 'itp_emea_prf'
+    'hosts':
+      - 'ckfnlr2cpipeb01.amer.dell.com:9092'
+      - 'ckfnlr2cpipeb02.amer.dell.com:9092'
+  - 'name': 'itp_dev'
+    'hosts':
+      - 'ckfnlr2citpb001.amer.dell.com:9092'
+      - 'ckfnlr2citpb002.amer.dell.com:9092'
+  - 'name': 'srs_np'
+    'hosts':
+      - 'ckfpls3bssrsb01.amer.dell.com:9092'
+      - 'ckfpls3bssrsb02.amer.dell.com:9092'
+  - 'name': 'std_np'
+    'hosts':
+      - 'ckfnlstdb01.amer.dell.com:9092'
+      - 'ckfnlstdb02.amer.dell.com:9092'
+  - 'name': 'dfs_np'
     'hosts':
       - 'ckfnlr2cdfsb01.amer.dell.com:9092'
-  - 'name': 'COMIT-PERF-APJ'
+      - 'ckfnlr2cdfsb02.amer.dell.com:9092'
+  - 'name': 'trp_np's
     'hosts':
-      - 'ckfnlr2capcmtb4.amer.dell.com:9092'
+      - 'ckfnlr2ccpeb01.us.dell.com:9092'
+      - 'ckfnlr2ccpeb02.us.dell.com:9092'
+  - 'name': 'mlt_np'
+    'hosts':
+      - 'ckfnlr2cmltb001.us.dell.com:9092'
+      - 'ckfnlr2cmltb002.us.dell.com:9092'
+  - 'name': 'cre_np'
+    'hosts':
+      - 'ckfnlr2ccreb001.amer.dell.com:9092'
+      - 'ckfnlr2ccreb002.amer.dell.com:9092'
     
