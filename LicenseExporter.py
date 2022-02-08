@@ -59,6 +59,7 @@ def export_license(client, security, name, bootstrap_servers):
 
     except Exception as e:
         logging.error(e)
+        logging.error(bootstrap_servers[0])
 
 
 if __name__ == '__main__':
@@ -71,12 +72,15 @@ if __name__ == '__main__':
     while True:
         logging.info('started collecting license expiry details ..')
         client = config.client_conf['client']
-        security = config.client_conf['security']
+        security = (config.client_conf['security']).copy()
         for cluster in config.client_conf['clusters']:
             bootstrap_servers = cluster['hosts']
             name = cluster['name']
+            if 'cred' in cluster.keys(): # some clusters may have their own creds
+                security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
+                security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
             export_license(client, security, name, bootstrap_servers)
             logging.debug('probing {0}'.format(name))
         # we may want to scrape once a day
         time.sleep(24*60*60)
-        # time.sleep(120)
+        # time.sleep(60)

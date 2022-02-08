@@ -5,8 +5,8 @@
   'security_protocol': 'SASL_SSL'
   'ssl_check_hostname': False
   'sasl_mechanism': 'SCRAM-SHA-256'
-  'sasl_plain_username': 'xxxx'  # add account username
-  'sasl_plain_password': 'xxxxxx' # add account password
+  'sasl_plain_username': 'xxx'  # add account username
+  'sasl_plain_password': 'xxx' # add account password
 'clusters':
   - 'name': 'perf'
     'hosts':
@@ -55,10 +55,13 @@
     'hosts':
       - 'ckfnlr2cdfsb01.amer.dell.com:9092'
       - 'ckfnlr2cdfsb02.amer.dell.com:9092'
-  - 'name': 'trp_np's
+  - 'name': 'trp_np'
     'hosts':
       - 'ckfnlr2ccpeb01.us.dell.com:9092'
       - 'ckfnlr2ccpeb02.us.dell.com:9092'
+    'cred':
+      'sasl_plain_username': 'xxx'
+      'sasl_plain_password': 'xxx'
   - 'name': 'mlt_np'
     'hosts':
       - 'ckfnlr2cmltb001.us.dell.com:9092'
