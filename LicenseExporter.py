@@ -2,6 +2,7 @@ import time
 import datetime
 import base64
 import json
+import copy
 from prometheus_client import Gauge, start_http_server, Summary, Info
 from kafka import KafkaConsumer
 import config_reader as config
@@ -58,12 +59,13 @@ def export_license(client, security, name, bootstrap_servers):
         logging.error(e)
         logging.error(bootstrap_servers[0])
 
+
 def extract_expiry_time(license_dict):
     expires_on = datetime.datetime.utcfromtimestamp(
-                license_dict['exp'])
+        license_dict['exp'])
     exp_date = expires_on.strftime('%Y-%m-%d %H:%M:%S')
     days_remaining = (expires_on.date() - datetime.date.today()).days
-    return exp_date,days_remaining
+    return exp_date, days_remaining
 
 
 def extract_props(security, cluster):
@@ -85,8 +87,8 @@ if __name__ == '__main__':
     while True:
         logging.info('started collecting license expiry details ..')
         client = config.client_conf['client']
-        security = (config.client_conf['security']).copy()
         for cluster in config.client_conf['clusters']:
+            security = copy.deepcopy(config.client_conf['security'])
             hosts, name, sec = extract_props(security, cluster)
             export_license(client, sec, name, hosts)
             logging.debug('probing {0}'.format(name))
