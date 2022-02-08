@@ -2,11 +2,11 @@
 
 This is a python component that can query a list of provided Kafka brokers and extract license information and expose license expiry details to Prometheus as open-metrics standard.
 
-This component implements that ideas presented in the approach-2 (Licnese Exporter to Prometheus) presented in https://confluence.dell.com/display/KAFKA/Kafka+License+Monitoring+and+Alerting
+This component implements the ideas presented in the approach-2 (Licnese Exporter to Prometheus) presented in https://confluence.dell.com/display/KAFKA/Kafka+License+Monitoring+and+Alerting
 
 
 
-Initial Configurtation
+Initial Configuration
 ---
 first install all the packages
 ~~~
@@ -31,6 +31,23 @@ Testing
 once the component sharts ruinning, it opens a http server at port nr 8000.
 check in your browse http://<hostaddress>:8000/metrics
 
+The following is a sample output
+```
+license_expiry_in_days{cluster="perf",exp_date="2024-05-30 07:00:00",host="CKFPLPC1PRFB01.amer.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="poc_upgrade",exp_date="2024-05-30 07:00:00",host="ckfnlr2cpocb001.us.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="dtc_stg",exp_date="2024-05-30 07:00:00",host="ckfplpc1sdtcb01.us.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="itp_apj_sit",exp_date="NA",host="ckfnlr2csipab01.amer.dell.com:9092"} -255.0    # -255 THE LICENSE INFOR COULDNOT BE RECEIVED FROM CLUSTER
+license_expiry_in_days{cluster="itp_apj_prf",exp_date="NA",host="ckfnlr2cpipab01.amer.dell.com:9092"} -255.0    # -255 THE LICENSE INFOR COULDNOT BE RECEIVED FROM CLUSTER
+license_expiry_in_days{cluster="itp_emea_sit",exp_date="2022-08-30 07:00:00",host="ckfnlr2csipeb01.amer.dell.com:9092"} 204.0
+license_expiry_in_days{cluster="itp_emea_prf",exp_date="2022-08-30 07:00:00",host="ckfnlr2cpipeb01.amer.dell.com:9092"} 204.0
+license_expiry_in_days{cluster="itp_dev",exp_date="2024-05-30 07:00:00",host="ckfnlr2citpb001.amer.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="srs_np",exp_date="2024-05-30 07:00:00",host="ckfpls3bssrsb01.amer.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="std_np",exp_date="2022-10-13 07:00:00",host="ckfnlstdb01.amer.dell.com:9092"} 248.0
+license_expiry_in_days{cluster="dfs_np",exp_date="2022-10-13 07:00:00",host="ckfnlr2cdfsb01.amer.dell.com:9092"} 248.0
+license_expiry_in_days{cluster="mlt_np",exp_date="2024-05-30 07:00:00",host="ckfnlr2cmltb001.us.dell.com:9092"} 843.0
+license_expiry_in_days{cluster="cre_np",exp_date="2024-05-30 07:00:00",host="ckfnlr2ccreb001.amer.dell.com:9092"} 843.0
+```
+Notice -255 is used as values if the license expiry days value if it is not received from that cluster 
 
 Trouble shooting
 ---
