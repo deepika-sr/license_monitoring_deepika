@@ -12,9 +12,6 @@
     'hosts':
       - 'CKFPLPC1PRFB01.amer.dell.com:9092'
       - 'CKFPLPC1PRFB02.amer.dell.com:9092'
-  # - 'name': 'COMIT-PERF-APJ'
-  #   'hosts':
-  #     - 'ckfnlr2capcmtb4.amer.dell.com:9092'
   - 'name': 'poc_upgrade'
     'hosts':
       - 'ckfnlr2cpocb001.us.dell.com:9092'

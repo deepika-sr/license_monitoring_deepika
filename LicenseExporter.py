@@ -46,10 +46,7 @@ def export_license(client, security, name, bootstrap_servers):
         host = bootstrap_servers[0]
         # Check if a response was received
         if (license_dict['exp'] != UNAVAILABLE):
-            expires_on = datetime.datetime.utcfromtimestamp(
-                license_dict['exp'])
-            exp_date = expires_on.strftime('%Y-%m-%d %H:%M:%S')
-            days_remaining = (expires_on.date() - datetime.date.today()).days
+            exp_date, days_remaining = extract_expiry_time(license_dict)
             # add details to the Metics
             LICENSE_INFO.labels(name, host, exp_date).set(days_remaining)
         else:
@@ -60,6 +57,22 @@ def export_license(client, security, name, bootstrap_servers):
     except Exception as e:
         logging.error(e)
         logging.error(bootstrap_servers[0])
+
+def extract_expiry_time(license_dict):
+    expires_on = datetime.datetime.utcfromtimestamp(
+                license_dict['exp'])
+    exp_date = expires_on.strftime('%Y-%m-%d %H:%M:%S')
+    days_remaining = (expires_on.date() - datetime.date.today()).days
+    return exp_date,days_remaining
+
+
+def extract_props(security, cluster):
+    bootstrap_servers = cluster['hosts']
+    name = cluster['name']
+    if 'cred' in cluster.keys():  # some clusters may have their own creds
+        security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
+        security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
+    return bootstrap_servers, name, security
 
 
 if __name__ == '__main__':
@@ -74,12 +87,8 @@ if __name__ == '__main__':
         client = config.client_conf['client']
         security = (config.client_conf['security']).copy()
         for cluster in config.client_conf['clusters']:
-            bootstrap_servers = cluster['hosts']
-            name = cluster['name']
-            if 'cred' in cluster.keys(): # some clusters may have their own creds
-                security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
-                security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
-            export_license(client, security, name, bootstrap_servers)
+            hosts, name, sec = extract_props(security, cluster)
+            export_license(client, sec, name, hosts)
             logging.debug('probing {0}'.format(name))
         # we may want to scrape once a day
         time.sleep(24*60*60)
