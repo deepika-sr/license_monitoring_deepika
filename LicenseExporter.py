@@ -1,5 +1,6 @@
 import time
 import datetime
+from concurrent import futures
 import base64
 import json
 import copy
@@ -86,12 +87,14 @@ if __name__ == '__main__':
     # Generate some requests.
     while True:
         logging.info('started collecting license expiry details ..')
-        client = config.client_conf['client']
-        for cluster in config.client_conf['clusters']:
-            security = copy.deepcopy(config.client_conf['security'])
+
+        client_config = config.get_client_config()
+        client = client_config['client']
+        for cluster in client_config['clusters']:
+            security = copy.deepcopy(client_config['security'])
             hosts, name, sec = extract_props(security, cluster)
             export_license(client, sec, name, hosts)
             logging.debug('probing {0}'.format(name))
         # we may want to scrape once a day
-        time.sleep(24*60*60)
-        # time.sleep(60)
+        # time.sleep(24*60*60)
+        time.sleep(60)
