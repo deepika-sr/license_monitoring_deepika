@@ -1,6 +1,6 @@
 import time
 import datetime
-from concurrent import futures
+import concurrent.futures
 import base64
 import json
 import copy
@@ -90,11 +90,13 @@ if __name__ == '__main__':
 
         client_config = config.get_client_config()
         client = client_config['client']
-        for cluster in client_config['clusters']:
-            security = copy.deepcopy(client_config['security'])
-            hosts, name, sec = extract_props(security, cluster)
-            export_license(client, sec, name, hosts)
-            logging.debug('probing {0}'.format(name))
-        # we may want to scrape once a day
-        # time.sleep(24*60*60)
-        time.sleep(60)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            for cluster in client_config['clusters']:
+                security = copy.deepcopy(client_config['security'])
+                hosts, name, sec = extract_props(security, cluster)
+                futuren_to_export_license = executor.submit(export_license, client, sec, name, hosts)
+                
+            # we may want to scrape once a day
+        time.sleep(24*60*60)
+        # time.sleep(60)
