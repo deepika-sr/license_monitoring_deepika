@@ -5,10 +5,10 @@ from pathlib import Path
 
 curdir= path.dirname(__file__)
 conf_file = path.join(curdir,'config.yml')
-client_conf={}
 
-with open(conf_file,'r') as conf:
-    client_conf = safe_load(conf.read())
 
-# import json 
-# print(client_conf['clusters'][0]['hosts'])
+# Every Time read from file.s
+def get_client_config():
+    with open(conf_file,'r') as conf:
+        client_conf = safe_load(conf.read())
+        return client_conf
