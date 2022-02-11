@@ -1,5 +1,6 @@
 import time
 import datetime
+import concurrent.futures
 import base64
 import json
 import copy
@@ -29,12 +30,10 @@ def decode_license(message):
     return license_dict
 
 # Decorate function with metric
-
-
-def export_license(client, security, name, bootstrap_servers):
+def export_license(client_config, security, cluster_name, bootstrap_servers):
     try:
         consumer = KafkaConsumer('_confluent-command', auto_offset_reset='earliest',
-                                 ** client, ** security, bootstrap_servers=bootstrap_servers,
+                                 ** client_config, ** security, bootstrap_servers=bootstrap_servers,
                                  consumer_timeout_ms=10000)
         # set default expiry to UNAVAILABLE, A received response will overwrite it.
         license_dict = {'exp': UNAVAILABLE}
@@ -49,10 +48,10 @@ def export_license(client, security, name, bootstrap_servers):
         if (license_dict['exp'] != UNAVAILABLE):
             exp_date, days_remaining = extract_expiry_time(license_dict)
             # add details to the Metics
-            LICENSE_INFO.labels(name, host, exp_date).set(days_remaining)
+            LICENSE_INFO.labels(cluster_name, host, exp_date).set(days_remaining)
         else:
             # Declare that data was not received
-            LICENSE_INFO.labels(name, host, 'NA').set(UNAVAILABLE)
+            LICENSE_INFO.labels(cluster_name, host, 'NA').set(UNAVAILABLE)
             logging.error('Unable to read license info from {0}'.format(host))
 
     except Exception as e:
@@ -86,12 +85,17 @@ if __name__ == '__main__':
     # Generate some requests.
     while True:
         logging.info('started collecting license expiry details ..')
-        client = config.client_conf['client']
-        for cluster in config.client_conf['clusters']:
-            security = copy.deepcopy(config.client_conf['security'])
-            hosts, name, sec = extract_props(security, cluster)
-            export_license(client, sec, name, hosts)
-            logging.debug('probing {0}'.format(name))
-        # we may want to scrape once a day
+
+        client_config = config.get_client_config()
+        client = client_config['client']
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            for cluster in client_config['clusters']:
+                security = copy.deepcopy(client_config['security'])
+                hosts, cluster_name, sec = extract_props(security, cluster)
+                futuren_to_export_license = executor.submit(
+                    export_license, client, sec, cluster_name, hosts)
+
+            # we may want to scrape once a day
         time.sleep(24*60*60)
-        # time.sleep(60)
+        # time.sleep(180)
