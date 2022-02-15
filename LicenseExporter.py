@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.ERROR)
 UNAVAILABLE = -255
 
 LICENSE_INFO = Gauge('license_expiry_in_days',
-                     'License expirty of each cluster', ['cluster', 'host', 'exp_date'])
+                     'License expirty of each cluster', ['role', 'cluster', 'host', 'exp_date'])
 
 # This takes individual license message from __confluent-command topic
 # and parses the value part of the JWT and decode into a dict
@@ -30,10 +30,12 @@ def decode_license(message):
     return license_dict
 
 # Decorate function with metric
-def export_license(client_config, security, cluster_name, bootstrap_servers):
+
+
+def export_license(client_config, security, cluster_name, role, hosts):
     try:
         consumer = KafkaConsumer('_confluent-command', auto_offset_reset='earliest',
-                                 ** client_config, ** security, bootstrap_servers=bootstrap_servers,
+                                 ** client_config, ** security, bootstrap_servers=hosts,
                                  consumer_timeout_ms=10000)
         # set default expiry to UNAVAILABLE, A received response will overwrite it.
         license_dict = {'exp': UNAVAILABLE}
@@ -43,20 +45,22 @@ def export_license(client_config, security, cluster_name, bootstrap_servers):
                 # Other messages in this topic are not important, hence break
                 break
 
-        host = bootstrap_servers[0]
+        host = hosts[0]
         # Check if a response was received
         if (license_dict['exp'] != UNAVAILABLE):
             exp_date, days_remaining = extract_expiry_time(license_dict)
             # add details to the Metics
-            LICENSE_INFO.labels(cluster_name, host, exp_date).set(days_remaining)
+            LICENSE_INFO.labels(role, cluster_name,  host,
+                                exp_date).set(days_remaining)
         else:
             # Declare that data was not received
-            LICENSE_INFO.labels(cluster_name, host, 'NA').set(UNAVAILABLE)
+            LICENSE_INFO.labels(role, cluster_name, host,
+                                'NA').set(UNAVAILABLE)
             logging.error('Unable to read license info from {0}'.format(host))
 
     except Exception as e:
         logging.error(e)
-        logging.error(bootstrap_servers[0])
+        logging.error(hosts[0])
 
 
 def extract_expiry_time(license_dict):
@@ -69,11 +73,12 @@ def extract_expiry_time(license_dict):
 
 def extract_props(security, cluster):
     bootstrap_servers = cluster['hosts']
+    role = cluster['role']
     name = cluster['name']
     if 'cred' in cluster.keys():  # some clusters may have their own creds
         security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
         security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
-    return bootstrap_servers, name, security
+    return bootstrap_servers, name, role, security
 
 
 if __name__ == '__main__':
@@ -92,9 +97,10 @@ if __name__ == '__main__':
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             for cluster in client_config['clusters']:
                 security = copy.deepcopy(client_config['security'])
-                hosts, cluster_name, sec = extract_props(security, cluster)
+                hosts, cluster_name, role, sec = extract_props(
+                    security, cluster)
                 futuren_to_export_license = executor.submit(
-                    export_license, client, sec, cluster_name, hosts)
+                    export_license, client, sec, cluster_name, role, hosts)
 
             # we may want to scrape once a day
         time.sleep(24*60*60)
