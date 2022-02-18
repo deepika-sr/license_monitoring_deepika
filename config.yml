@@ -1,84 +1,280 @@
 ---
-'client':
-  'client_id': 'client1'
-'security':
-  'security_protocol': 'SASL_SSL'
-  'ssl_check_hostname': False
-  'sasl_mechanism': 'SCRAM-SHA-256'
-  'sasl_plain_username': 'xxx'  # add account username
-  'sasl_plain_password': 'xxx' # add account password
-'clusters':
-  - 'name': 'perf'
-    'role': 'PERF'
-    'hosts':
-      - 'CKFPLPC1PRFB01.amer.dell.com:9092'
-      - 'CKFPLPC1PRFB02.amer.dell.com:9092'
-  - 'name': 'poc_upgrade'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2cpocb001.us.dell.com:9092'
-      - 'ckfnlr2cpocb002.us.dell.com:9092'
-  - 'name': 'dtc_stg'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfplpc1sdtcb01.us.dell.com:9092'
-      - 'ckfplpc1sdtcb02.us.dell.com:9092'
-  - 'name': 'itp_apj_sit'
-    'role': 'SIT'
-    'hosts':
-      - 'ckfnlr2csipab01.amer.dell.com:9092'
-      - 'ckfnlr2csipab02.amer.dell.com:9092'
-  - 'name': 'itp_apj_prf'
-    'role': 'PERF'
-    'hosts':
-      - 'ckfnlr2cpipab01.amer.dell.com:9092'
-      - 'ckfnlr2cpipab02.amer.dell.com:9092'
-  - 'name': 'itp_emea_sit'
-    'role': 'SIT'
-    'hosts':
-      - 'ckfnlr2csipeb01.amer.dell.com:9092'
-      - 'ckfnlr2csipeb02.amer.dell.com:9092'
-  - 'name': 'itp_emea_prf'
-    'role': 'PERF'
-    'hosts':
-      - 'ckfnlr2cpipeb01.amer.dell.com:9092'
-      - 'ckfnlr2cpipeb02.amer.dell.com:9092'
-  - 'name': 'itp_dev'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2citpb001.amer.dell.com:9092'
-      - 'ckfnlr2citpb002.amer.dell.com:9092'
-  - 'name': 'srs_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfpls3bssrsb01.amer.dell.com:9092'
-      - 'ckfpls3bssrsb02.amer.dell.com:9092'
-  - 'name': 'std_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlstdb01.amer.dell.com:9092'
-      - 'ckfnlstdb02.amer.dell.com:9092'
-  - 'name': 'dfs_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2cdfsb01.amer.dell.com:9092'
-      - 'ckfnlr2cdfsb02.amer.dell.com:9092'
-  - 'name': 'trp_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2ccpeb01.us.dell.com:9092'
-      - 'ckfnlr2ccpeb02.us.dell.com:9092'
-    'cred':
-      'sasl_plain_username': 'xxx'
-      'sasl_plain_password': 'xxx'
-  - 'name': 'mlt_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2cmltb001.us.dell.com:9092'
-      - 'ckfnlr2cmltb002.us.dell.com:9092'
-  - 'name': 'cre_np'
-    'role': 'NON-PROD'
-    'hosts':
-      - 'ckfnlr2ccreb001.amer.dell.com:9092'
-      - 'ckfnlr2ccreb002.amer.dell.com:9092'
-    
+"client":
+  "client_id": "client1"
+"security":
+  "security_protocol": "SASL_SSL"
+  "ssl_check_hostname": False
+  "sasl_mechanism": "SCRAM-SHA-256"
+  "sasl_plain_username": "xxx" # add account username
+  "sasl_plain_password": "xxx" # add account password
+"clusters":
+  - "name": "DELLCOM-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "r2cdlddcmjljg01.us.dell.com:443",
+        "r2cdlddcmjljg02.us.dell.com:443",
+        "r2cdlddcmjljg03.us.dell.com:443",
+        "r2cdlddcmjljg04.us.dell.com:443",
+      ]
+    "cred":
+      "sasl_plain_username": "xxx"
+      "sasl_plain_password": "xxx"
+
+  - "name": "DTC-STG"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfplpc1sdtcb01.us.dell.com:9092",
+        "ckfplpc1sdtcb02.us.dell.com:9092",
+        "ckfpls3bsdtcb01.us.dell.com:9092",
+        "ckfpls3bsdtcb02.us.dell.com:9092",
+      ]
+
+  - "name": "MLT-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cmltb001.us.dell.com:9092",
+        "ckfnlr2cmltb002.us.dell.com:9092",
+        "ckfnlr2cmltb003.us.dell.com:9092",
+        "ckfnlr2cmltb004.us.dell.com:9092",
+      ]
+  - "name": "STD-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlstdb01.amer.dell.com:9092",
+        "ckfnlstdb02.amer.dell.com:9092",
+        "ckfnlstdb03.amer.dell.com:9092",
+      ]
+  - "name": "TRP-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2ccpeb01.us.dell.com:9092",
+        "ckfnlr2ccpeb02.us.dell.com:9092",
+        "ckfnlr2ccpeb03.us.dell.com:9092",
+      ]
+    "cred":
+      "sasl_plain_username": "xxx"
+      "sasl_plain_password": "xxx"
+
+  - "name": "BMG-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cbmgb01.amer.dell.com:9092",
+        "ckfnlr2cbmgb02.amer.dell.com:9092",
+        "ckfnlr2cbmgb03.amer.dell.com:9092",
+        "ckfnlr2cbmgb04.amer.dell.com:9092",
+        "ckfnlr2cbmgb05.amer.dell.com:9092",
+        "ckfnlr2cbmgb06.amer.dell.com:9092",
+      ]
+
+  - "name": "SRS-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfpldurssrsb01.amer.dell.com:9092",
+        "ckfpldurssrsb02.amer.dell.com:9092",
+        "ckfpls3bssrsb01.amer.dell.com:9092",
+        "ckfpls3bssrsb02.amer.dell.com:9092",
+        "ckfpls3bssrsb03.amer.dell.com:9092",
+        "CKFNLR2CSRSB03.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-EMEA-SIT"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2csipeb01.amer.dell.com:9092",
+        "ckfnlr2csipeb02.amer.dell.com:9092",
+        "ckfnlr2csipeb03.amer.dell.com:9092",
+        "ckfnlr2csipeb04.amer.dell.com:9092",
+        "ckfnlr2csipeb05.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-APJ-SIT"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2csipab01.amer.dell.com:9092",
+        "ckfnlr2csipab02.amer.dell.com:9092",
+        "ckfnlr2csipab03.amer.dell.com:9092",
+        "ckfnlr2csipab04.amer.dell.com:9092",
+        "ckfnlr2csipab05.amer.dell.com:9092",
+      ]
+
+  - "name": "CRE-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2ccreb001.amer.dell.com:9092",
+        "ckfnlr2ccreb002.amer.dell.com:9092",
+        "ckfnlr2ccreb003.amer.dell.com:9092",
+        "ckfnlr2ccreb004.amer.dell.com:9092",
+      ]
+
+  - "name": "DFS-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cdfsb01.amer.dell.com:9092",
+        "ckfnlr2cdfsb02.amer.dell.com:9092",
+        "ckfnlr2cdfsb03.amer.dell.com:9092",
+        "ckfnlr2cdfsb04.amer.dell.com:9092",
+      ]
+
+  - "name": "SCT-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2csctb01.amer.dell.com:9092",
+        "ckfnlr2csctb02.amer.dell.com:9092",
+        "ckfnlr2csctb03.amer.dell.com:9092",
+        "ckfnlr2csctb04.amer.dell.com:9092",
+      ]
+  - "name": "ITP-NP"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2citpb001.amer.dell.com:9092",
+        "ckfnlr2citpb002.amer.dell.com:9092",
+        "ckfnlr2citpb003.amer.dell.com:9092",
+        "ckfnlr2citpb004.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-EMEA-PRF"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cpipeb01.amer.dell.com:9092",
+        "ckfnlr2cpipeb02.amer.dell.com:9092",
+        "ckfnlr2cpipeb03.amer.dell.com:9092",
+        "ckfnlr2cpipeb04.amer.dell.com:9092",
+        "ckfnlr2cpipeb05.amer.dell.com:9092",
+        "ckfnlr2cpipeb06.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-APJ-PRF"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cpipab01.amer.dell.com:9092",
+        "ckfnlr2cpipab02.amer.dell.com:9092",
+        "ckfnlr2cpipab03.amer.dell.com:9092",
+        "ckfnlr2cpipab04.amer.dell.com:9092",
+        "ckfnlr2cpipab05.amer.dell.com:9092",
+        "ckfnlr2cpipab06.amer.dell.com:9092",
+      ]
+
+  - "name": "IDS-SIT"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cidsb01.amer.dell.com:9092",
+        "ckfnlr2cidsb02.amer.dell.com:9092",
+        "ckfnlr2cidsb03.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-DEV"
+    "envs": "NP"
+    "hosts":
+      [
+        "ckfnlr2cditmb01.amer.dell.com:9092",
+        "ckfnlr2cditmb02.amer.dell.com:9092",
+        "ckfnlr2cditmb03.amer.dell.com:9092",
+      ]
+
+  # - "name": "PIT-EMEA-SIT"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cespitb1.amer.dell.com:9092",
+  #       "ckfnlr2cespitb2.amer.dell.com:9092",
+  #       "ckfnlr2cespitb3.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "CMT-APJ-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2capcmtb1.amer.dell.com:9092",
+  #       "ckfnlr2capcmtb2.amer.dell.com:9092",
+  #       "ckfnlr2capcmtb3.amer.dell.com:9092",
+  #       "ckfnlr2capcmtb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "PIT-APJ-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cappitb1.amer.dell.com:9092",
+  #       "ckfnlr2cappitb2.amer.dell.com:9092",
+  #       "ckfnlr2cappitb3.amer.dell.com:9092",
+  #       "ckfnlr2cappitb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "PIT-EMEA-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2ceppitb1.amer.dell.com:9092",
+  #       "ckfnlr2ceppitb2.amer.dell.com:9092",
+  #       "ckfnlr2ceppitb3.amer.dell.com:9092",
+  #       "ckfnlr2ceppitb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "CMT-AMER-SIT"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cuscmtb1.amer.dell.com:9092",
+  #       "ckfnlr2cuscmtb2.amer.dell.com:9092",
+  #       "ckfnlr2cuscmtb3.amer.dell.com:9092",
+  #       "ckfnlr2cuscmtb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "CMT-AMER-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cupcmtb1.amer.dell.com:9092",
+  #       "ckfnlr2cupcmtb2.amer.dell.com:9092",
+  #       "ckfnlr2cupcmtb3.amer.dell.com:9092",
+  #       "ckfnlr2cupcmtb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "PIT-AMER-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cuppitb1.amer.dell.com:9092",
+  #       "ckfnlr2cuppitb2.amer.dell.com:9092",
+  #       "ckfnlr2cuppitb3.amer.dell.com:9092",
+  #       "ckfnlr2cuppitb4.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "ITP-AMER-SIT"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cusitpb1.amer.dell.com:9092",
+  #       "ckfnlr2cusitpb2.amer.dell.com:9092",
+  #       "ckfnlr2cusitpb3.amer.dell.com:9092",
+  #       "ckfnlr2cusitpb4.amer.dell.com:9092",
+  #       "ckfnlr2cusitpb5.amer.dell.com:9092",
+  #     ]
+
+  # - "name": "ITP-AMER-PRF"
+  #   "envs": "NP"
+  #   "hosts":
+  #     [
+  #       "ckfnlr2cupitpb1.amer.dell.com:9092",
+  #       "ckfnlr2cupitpb2.amer.dell.com:9092",
+  #       "ckfnlr2cupitpb3.amer.dell.com:9092",
+  #       "ckfnlr2cupitpb4.amer.dell.com:9092",
+  #       "ckfnlr2cupitpb5.amer.dell.com:9092",
+  #       "ckfnlr2cupitpb6.amer.dell.com:9092",
+  #     ]
