@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.ERROR)
 UNAVAILABLE = -255
 
 LICENSE_INFO = Gauge('license_expiry_in_days',
-                     'License expirty of each cluster', ['role', 'cluster', 'host', 'exp_date'])
+                     'Confluent Kafka License validity for each cluster', ['envs', 'cluster', 'host', 'exp_date'])
 
 # This takes individual license message from __confluent-command topic
 # and parses the value part of the JWT and decode into a dict
@@ -32,7 +32,7 @@ def decode_license(message):
 # Decorate function with metric
 
 
-def export_license(client_config, security, cluster_name, role, hosts):
+def export_license(client_config, security, cluster_name, envs, hosts):
     try:
         consumer = KafkaConsumer('_confluent-command', auto_offset_reset='earliest',
                                  ** client_config, ** security, bootstrap_servers=hosts,
@@ -50,11 +50,11 @@ def export_license(client_config, security, cluster_name, role, hosts):
         if (license_dict['exp'] != UNAVAILABLE):
             exp_date, days_remaining = extract_expiry_time(license_dict)
             # add details to the Metics
-            LICENSE_INFO.labels(role, cluster_name,  host,
-                                exp_date).set(days_remaining)
+            LICENSE_INFO.labels(envs, cluster_name,  host,
+                                exp_date).set(days_remaining) #in days
         else:
             # Declare that data was not received
-            LICENSE_INFO.labels(role, cluster_name, host,
+            LICENSE_INFO.labels(envs, cluster_name, host,
                                 'NA').set(UNAVAILABLE)
             logging.error('Unable to read license info from {0}'.format(host))
 
@@ -67,18 +67,19 @@ def extract_expiry_time(license_dict):
     expires_on = datetime.datetime.utcfromtimestamp(
         license_dict['exp'])
     exp_date = expires_on.strftime('%Y-%m-%d %H:%M:%S')
-    days_remaining = (expires_on.date() - datetime.date.today()).days
-    return exp_date, days_remaining
+    time_remaining = (expires_on.date() -
+                      datetime.date.today()).days
+    return exp_date, time_remaining
 
 
 def extract_props(security, cluster):
     bootstrap_servers = cluster['hosts']
-    role = cluster['role']
+    envs = cluster['envs']
     name = cluster['name']
     if 'cred' in cluster.keys():  # some clusters may have their own creds
         security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
         security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
-    return bootstrap_servers, name, role, security
+    return bootstrap_servers, name, envs, security
 
 
 if __name__ == '__main__':
@@ -94,13 +95,13 @@ if __name__ == '__main__':
         client_config = config.get_client_config()
         client = client_config['client']
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
             for cluster in client_config['clusters']:
                 security = copy.deepcopy(client_config['security'])
-                hosts, cluster_name, role, sec = extract_props(
+                hosts, cluster_name, envs, sec = extract_props(
                     security, cluster)
                 futuren_to_export_license = executor.submit(
-                    export_license, client, sec, cluster_name, role, hosts)
+                    export_license, client, sec, cluster_name, envs, hosts)
 
             # we may want to scrape once a day
         time.sleep(24*60*60)
