@@ -17,15 +17,33 @@ Broker configurations
 ---
 Broker configurations are maintained in the _**config.yml**_ file.
 
-
-How to run the component 
+Getting help
 ---
-_**!!! Before running make sure the credentials entered in config.yml are correct!!!**_
+~~~
+> python3 LicenseExporter.py --help
+usage: LicenseExporter.py [-h] -p   -c   [-w ]
+ 
+handles command line arguments for License Expiry monitoring
+ 
+optional arguments:
+  -h, --help            show this help message and exit
+  -p  , --port          the port for prometheus endpoint: default=None
+  -c  , --config-path
+                        file path to yml file containing target kafka
+                        clusters: default=None
+  -w  , --workers       Number of workers to handle concurrent requests to
+                        kafka clusters:default=8
 
-To run the code Just execute the following 
 ~~~
- > python3 LicenseExporter.py 
+Running the component
+---
+!!! Before running make sure the credentials entered in config.yml are correct!!!
+
+To run the code Just execute the following
 ~~~
+ >  python3 LicenseExporter.py -p 8000 -c ./config.yml
+~~~
+
 Testing
 ---
 once the component sharts ruinning, it opens a http server at port nr 8000.
