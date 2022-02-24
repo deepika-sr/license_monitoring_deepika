@@ -85,7 +85,7 @@ def extract_props(security, cluster):
 
 def parseargs():
     cli = argparse.ArgumentParser(
-        description=" handles command line arguments for Licens Expiry monitoring")
+        description="Component to monitor Confluent Kafka License Expiry dates")
     cli.add_argument('-p', '--port', metavar=' ', type=int, 
                      default=8000, help='the port for prometheus endpoint: default=None', required=True)
     cli.add_argument('-c', '--config-path', metavar=' ', type=str,
