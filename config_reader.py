@@ -1,12 +1,10 @@
-from  yaml  import safe_load
-from os import path
+from yaml import safe_load
 
-curdir= path.dirname(__file__)
-conf_file = path.join(curdir,'config.yml')
 
+# TODO handle DB  to read from inventory DB
 
 # Every Time read from file.s
-def get_client_config():
-    with open(conf_file,'r') as conf:
+def get_client_config(conf_file_path):
+    with open(conf_file_path, 'r') as conf:
         client_conf = safe_load(conf.read())
         return client_conf

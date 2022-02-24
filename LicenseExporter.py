@@ -4,10 +4,11 @@ import concurrent.futures
 import base64
 import json
 import copy
-from prometheus_client import Gauge, start_http_server, Summary, Info
+from prometheus_client import Gauge, start_http_server
 from kafka import KafkaConsumer
 import config_reader as config
 import logging
+import argparse
 
 logging.basicConfig(level=logging.ERROR)
 # A status value used to indicate unable to read license
@@ -51,7 +52,7 @@ def export_license(client_config, security, cluster_name, envs, hosts):
             exp_date, days_remaining = extract_expiry_time(license_dict)
             # add details to the Metics
             LICENSE_INFO.labels(envs, cluster_name,  host,
-                                exp_date).set(days_remaining) #in days
+                                exp_date).set(days_remaining)  # in days
         else:
             # Declare that data was not received
             LICENSE_INFO.labels(envs, cluster_name, host,
@@ -59,8 +60,7 @@ def export_license(client_config, security, cluster_name, envs, hosts):
             logging.error('Unable to read license info from {0}'.format(host))
 
     except Exception as e:
-        logging.error(e)
-        logging.error(hosts[0])
+        logging.error('Could not connect to {0} in cluster {1}'.format(hosts[0],cluster_name))
 
 
 def extract_expiry_time(license_dict):
@@ -71,6 +71,7 @@ def extract_expiry_time(license_dict):
                       datetime.date.today()).days
     return exp_date, time_remaining
 
+##
 
 def extract_props(security, cluster):
     bootstrap_servers = cluster['hosts']
@@ -82,27 +83,52 @@ def extract_props(security, cluster):
     return bootstrap_servers, name, envs, security
 
 
+def parseargs():
+    cli = argparse.ArgumentParser(
+        description=" handles command line arguments for Licens Expiry monitoring")
+    cli.add_argument('-p', '--port', metavar=' ', type=int, 
+                     default=8000, help='the port for prometheus endpoint: default=None', required=True)
+    cli.add_argument('-c', '--config-path', metavar=' ', type=str,
+                     help='file path to yml file containing target kafka clusters: default=None', required=True)
+    cli.add_argument('-w', '--workers', metavar=' ', type=int, default=8,
+                     help=' Number of workers to handle concurrent requests to kafka clusters:default=8')
+    args = cli.parse_args()
+
+    if not (0 < args.workers <= 16):
+        logging.error("Number of workers specified for arg -w/--workers too low or too high:min=1,max=16")
+        exit(1)
+    if not (0 < args.port):
+        logging.error("Port number too low:try -p 8000")
+        exit(1)
+
+    return args.port, args.config_path, args.workers
+
+
 if __name__ == '__main__':
 
-    # Start up the server to expose the metrics.
-    port = 8000
+    port, conf_file_path, num_workers = parseargs()
+
     start_http_server(port)
     logging.info('Starting server at port {0}'.format(port))
-    # Generate some requests.
+
     while True:
         logging.info('started collecting license expiry details ..')
-
-        client_config = config.get_client_config()
+        # Obtain target cluster congifs from yml file
+        client_config = config.get_client_config(conf_file_path)
         client = client_config['client']
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        #  The following will exectue parallel reads to clusters
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+
             for cluster in client_config['clusters']:
                 security = copy.deepcopy(client_config['security'])
+                # extract props from congifs
                 hosts, cluster_name, envs, sec = extract_props(
                     security, cluster)
+                # each cluster in the config read by a worker from a pool of max_workers
                 futuren_to_export_license = executor.submit(
                     export_license, client, sec, cluster_name, envs, hosts)
 
-            # we may want to scrape once a day
+        # we may want to scrape once a day
         time.sleep(24*60*60)
         # time.sleep(180)
