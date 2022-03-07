@@ -42,6 +42,9 @@ Running the component
 To run the code Just execute the following
 ~~~
  >  python3 LicenseExporter.py -p 8000 -c ./config.yml
+
+ or, run the component in background
+ > nohup python3 LicenseExporter.py -p 8000 -c ./config.yml > /dev/null 2>&1 &
 ~~~
 
 Testing
