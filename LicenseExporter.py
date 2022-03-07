@@ -57,10 +57,12 @@ def export_license(client_config, security, cluster_name, envs, hosts):
             # Declare that data was not received
             LICENSE_INFO.labels(envs, cluster_name, host,
                                 'NA').set(UNAVAILABLE)
-            logging.error('Unable to read license info from {0}'.format(host))
+            logging.error('Unable to read license info from cluster {0}, host: {1}'.format(
+                cluster_name, host))
 
     except Exception as e:
-        logging.error('Could not connect to {0} in cluster {1}'.format(hosts[0],cluster_name))
+        logging.error('Could not connect to {0} in cluster {1}'.format(
+            hosts[0], cluster_name))
 
 
 def extract_expiry_time(license_dict):
@@ -72,6 +74,7 @@ def extract_expiry_time(license_dict):
     return exp_date, time_remaining
 
 ##
+
 
 def extract_props(security, cluster):
     bootstrap_servers = cluster['hosts']
@@ -86,7 +89,7 @@ def extract_props(security, cluster):
 def parseargs():
     cli = argparse.ArgumentParser(
         description="Component to monitor Confluent Kafka License Expiry dates")
-    cli.add_argument('-p', '--port', metavar=' ', type=int, 
+    cli.add_argument('-p', '--port', metavar=' ', type=int,
                      default=8000, help='the port for prometheus endpoint: default=None', required=True)
     cli.add_argument('-c', '--config-path', metavar=' ', type=str,
                      help='file path to yml file containing target kafka clusters: default=None', required=True)
@@ -95,7 +98,8 @@ def parseargs():
     args = cli.parse_args()
 
     if not (0 < args.workers <= 16):
-        logging.error("Number of workers specified for arg -w/--workers too low or too high:min=1,max=16")
+        logging.error(
+            "Number of workers specified for arg -w/--workers too low or too high:min=1,max=16")
         exit(1)
     if not (0 < args.port):
         logging.error("Port number too low:try -p 8000")
