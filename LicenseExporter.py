@@ -5,7 +5,8 @@ import base64
 import json
 import copy
 from prometheus_client import Gauge, start_http_server
-from kafka import KafkaConsumer
+from kafka import KafkaAdminClient, KafkaConsumer
+from kafka.structs import TopicPartition
 import config_reader as config
 import logging
 import argparse
@@ -22,6 +23,11 @@ LICENSE_INFO = Gauge('license_expiry_in_days',
 
 
 def decode_license(message):
+    '''
+    Utility to decode the license information from the topic.
+    essentially extrats the 'exp' data from the base64 encoded license JWT that 
+    can be read from either '_confluent-command' or '_confluent-license' topic
+    '''
     encoded_license = base64.b64decode(message.value)
     license_string = encoded_license.decode("utf-8")
     # get the second half of jwt after '.' TODO use jwt.decode instead
@@ -34,16 +40,26 @@ def decode_license(message):
 
 
 def export_license(client_config, security, cluster_name, envs, hosts):
+    '''
+    This function is called to read data from a cluster and decode the license info
+    This function co-ordinate calling many utilities functions to get the work done
+    '''
+
+    topic = decide_license_topic(client_config, security, hosts)
+
     try:
-        consumer = KafkaConsumer('_confluent-command', auto_offset_reset='earliest',
+        consumer = KafkaConsumer(auto_offset_reset='earliest',
                                  ** client_config, ** security, bootstrap_servers=hosts,
                                  consumer_timeout_ms=10000)
-        # set default expiry to UNAVAILABLE, A received response will overwrite it.
+
+        lastOffset = get_lastOffset(topic, consumer)
+
         license_dict = {'exp': UNAVAILABLE}
+
         for message in consumer:
             if b'CONFLUENT_LICENSE' in message.key:
                 license_dict = decode_license(message)
-                # Other messages in this topic are not important, hence break
+            if message.offset == lastOffset - 1:
                 break
 
         host = hosts[0]
@@ -57,15 +73,54 @@ def export_license(client_config, security, cluster_name, envs, hosts):
             # Declare that data was not received
             LICENSE_INFO.labels(envs, cluster_name, host,
                                 'NA').set(UNAVAILABLE)
-            logging.error('Unable to read license info from cluster {0}, host: {1}'.format(
-                cluster_name, host))
+            logging.error('Unable to read license info from {0} in cluster {1}'.format(
+                host, cluster_name))
 
     except Exception as e:
+        print(e)
         logging.error('Could not connect to {0} in cluster {1}'.format(
             hosts[0], cluster_name))
 
 
+def get_lastOffset(topic, consumer):
+    '''
+    Returns the last offset value for a given topic, partition=0. lastOffSet is needed to exit out when 
+    messages are read upt to lastOffset
+    '''
+    tp = TopicPartition(topic, 0)
+    # register to the topic
+    consumer.assign([tp])
+
+    # obtain the last offset value
+    consumer.seek_to_end(tp)
+    lastOffset = consumer.position(tp)
+
+    consumer.seek_to_beginning(tp)
+    return lastOffset
+
+
+def decide_license_topic(client_config, security, hosts):
+    '''
+    License information can be in '_confluent-command' or '_confluent-license' topics,
+     '_confluent-license' is used in pre 6.2.1 installations, in which case, '_confluent-command' doesnot exist
+    '''
+    adminclient = KafkaAdminClient(
+        ** client_config, ** security, bootstrap_servers=hosts)
+
+    topic = '_confluent-command'
+    topic_desc = adminclient.describe_topics([topic])
+    if not topic_desc[0]['error_code'] == 0:
+        topic = '_confluent-license'
+
+    adminclient.close()
+    return topic
+
+
 def extract_expiry_time(license_dict):
+    '''
+    Extracts the time remaining in a human readable form as expiry data and days remaining to expiry
+    The original time of expiry as received from license is in Unix epoch time 
+    '''
     expires_on = datetime.datetime.utcfromtimestamp(
         license_dict['exp'])
     exp_date = expires_on.strftime('%Y-%m-%d %H:%M:%S')
@@ -77,6 +132,10 @@ def extract_expiry_time(license_dict):
 
 
 def extract_props(security, cluster):
+    '''
+    An utility method that extracts cluster related properities and security 
+    properties needed to connect and access data from the cluster
+    '''
     bootstrap_servers = cluster['hosts']
     envs = cluster['envs']
     name = cluster['name']
@@ -87,14 +146,17 @@ def extract_props(security, cluster):
 
 
 def parseargs():
+    '''
+    Utility to neatly parse command line arguments
+    '''
     cli = argparse.ArgumentParser(
         description="Component to monitor Confluent Kafka License Expiry dates")
     cli.add_argument('-p', '--port', metavar=' ', type=int,
-                     default=8000, help='the port for prometheus endpoint: default=None', required=True)
+                     default=8000, help='the port for prometheus endpoint: default=None', required=False)
     cli.add_argument('-c', '--config-path', metavar=' ', type=str,
                      help='file path to yml file containing target kafka clusters: default=None', required=True)
     cli.add_argument('-w', '--workers', metavar=' ', type=int, default=8,
-                     help=' Number of workers to handle concurrent requests to kafka clusters:default=8')
+                     help=' Number of workers to handle concurrent requests to kafka clusters:default=8', required=False)
     args = cli.parse_args()
 
     if not (0 < args.workers <= 16):
