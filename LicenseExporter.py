@@ -1,5 +1,6 @@
 import time
 import datetime
+import ssl
 import concurrent.futures
 import base64
 import json
@@ -18,9 +19,6 @@ UNAVAILABLE = -255
 LICENSE_INFO = Gauge('license_expiry_in_days',
                      'Confluent Kafka License validity for each cluster', ['envs', 'cluster', 'host', 'exp_date'])
 
-# This takes individual license message from __confluent-command topic
-# and parses the value part of the JWT and decode into a dict
-
 
 def decode_license(message):
     '''
@@ -36,7 +34,17 @@ def decode_license(message):
     license_dict = json.loads(license_value)
     return license_dict
 
-# Decorate function with metric
+
+def get_ssl_context():
+    '''
+    setts up an ssl context to use for connection with brokers
+    ssl cert and host name verifications are disabled.
+    without which, connection to few clusters will not be possible. 
+    '''
+    sslSettings = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    sslSettings.check_hostname = False
+    sslSettings.verify_mode = ssl.CERT_NONE
+    return sslSettings
 
 
 def export_license(client_config, security, cluster_name, envs, hosts):
@@ -49,7 +57,9 @@ def export_license(client_config, security, cluster_name, envs, hosts):
 
     try:
         consumer = KafkaConsumer(auto_offset_reset='earliest',
-                                 ** client_config, ** security, bootstrap_servers=hosts,
+                                 ** client_config, ** security,
+                                 bootstrap_servers=hosts,
+                                 ssl_context=get_ssl_context(),
                                  consumer_timeout_ms=10000)
 
         lastOffset = get_lastOffset(topic, consumer)
@@ -104,16 +114,22 @@ def decide_license_topic(client_config, security, hosts):
     License information can be in '_confluent-command' or '_confluent-license' topics,
      '_confluent-license' is used in pre 6.2.1 installations, in which case, '_confluent-command' doesnot exist
     '''
-    adminclient = KafkaAdminClient(
-        ** client_config, ** security, bootstrap_servers=hosts)
-
     topic = '_confluent-command'
-    topic_desc = adminclient.describe_topics([topic])
-    if not topic_desc[0]['error_code'] == 0:
-        topic = '_confluent-license'
+    try:
+        adminclient = KafkaAdminClient(** client_config,
+                                       ** security,
+                                       bootstrap_servers=hosts,
+                                       ssl_context=get_ssl_context())
 
-    adminclient.close()
-    return topic
+        topic_desc = adminclient.describe_topics([topic])
+        if not topic_desc[0]['error_code'] == 0:
+            topic = '_confluent-license'
+
+        adminclient.close()
+    except Exception as e:
+        print(e)
+    finally:
+        return topic
 
 
 def extract_expiry_time(license_dict):
@@ -136,13 +152,14 @@ def extract_props(security, cluster):
     An utility method that extracts cluster related properities and security 
     properties needed to connect and access data from the cluster
     '''
-    bootstrap_servers = cluster['hosts']
+    hosts = cluster['hosts']
     envs = cluster['envs']
-    name = cluster['name']
+    cluster_name = cluster['name']
     if 'cred' in cluster.keys():  # some clusters may have their own creds
-        security['sasl_plain_username'] = cluster['cred']['sasl_plain_username']
-        security['sasl_plain_password'] = cluster['cred']['sasl_plain_password']
-    return bootstrap_servers, name, envs, security
+        for key in cluster['cred'].keys():
+            # handle e.g.,  cluster['cred']['sasl_plain_username']
+            security[key] = cluster['cred'][key]
+    return hosts, cluster_name, envs, security
 
 
 def parseargs():
@@ -154,7 +171,7 @@ def parseargs():
     cli.add_argument('-p', '--port', metavar=' ', type=int,
                      default=8000, help='the port for prometheus endpoint: default=None', required=False)
     cli.add_argument('-c', '--config-path', metavar=' ', type=str,
-                     help='file path to yml file containing target kafka clusters: default=None', required=True)
+                     help='file path to yml file containing target kafka clusters: default=None', default='.\config_test.yml', required=False)
     cli.add_argument('-w', '--workers', metavar=' ', type=int, default=8,
                      help=' Number of workers to handle concurrent requests to kafka clusters:default=8', required=False)
     args = cli.parse_args()
