@@ -1,0 +1,373 @@
+---
+# Maintainer : Deepika Rajagopala
+"client":
+  "client_id": "client1"
+"security":
+  "security_protocol": "SASL_SSL"
+  "ssl_check_hostname": False
+  "sasl_mechanism": "SCRAM-SHA-256"
+  "sasl_plain_username": "xxx" # add account username
+  "sasl_plain_password": "xxx" # add account password
+"clusters":
+  - "name": "MDS-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1mdsb01.amer.dell.com:9093",
+        "ckfplpc1mdsb02.amer.dell.com:9093",
+        "ckfplpc1mdsb03.amer.dell.com:9093",
+        "ckfpls3bmdsb01.amer.dell.com:9093",
+        "ckfpls3bmdsb02.amer.dell.com:9093",
+        "ckfpls3bmdsb03.amer.dell.com:9093",
+        "ckfpldurmdsb01.amer.dell.com:9093",
+        "ckfpldurmdsb02.amer.dell.com:9093",
+        "ckfpldurmdsb03.amer.dell.com:9093",
+      ]
+    "cred":
+      "sasl_mechanism": "PLAIN"
+
+  - "name": "DELLCOM-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "kafplpc1bk01.us.dell.com:443",
+        "kafplpc1bk02.us.dell.com:443",
+        "kafplpc1bk03.us.dell.com:443",
+        "kafpls3bbk01.us.dell.com:443",
+        "kafpls3bbk02.us.dell.com:443",
+        "kafpls3bbk03.us.dell.com:443",
+      ]
+    "cred":
+      "sasl_plain_username": "xxx"
+      "sasl_plain_password": "xxx"
+
+  - "name": "DTC-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1dtcb01.us.dell.com:9092",
+        "ckfplpc1dtcb02.us.dell.com:9092",
+        "ckfplpc1dtcb03.us.dell.com:9092",
+        "ckfpls3bdtcb01.us.dell.com:9092",
+        "ckfpls3bdtcb02.us.dell.com:9092",
+        "ckfpls3bdtcb03.us.dell.com:9092",
+        "ckfpldurdtcb01.us.dell.com:9092",
+        "ckfpldurdtcb02.us.dell.com:9092",
+        "ckfpldurdtcb03.us.dell.com:9092",
+      ]
+
+  - "name": "MLT-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1mltb01.us.dell.com:9092",
+        "ckfplpc1mltb02.us.dell.com:9092",
+        "ckfplpc1mltb03.us.dell.com:9092",
+        "ckfpls3bmltb01.us.dell.com:9092",
+        "ckfpls3bmltb02.us.dell.com:9092",
+        "ckfpls3bmltb03.us.dell.com:9092",
+      ]
+  - "name": "STD-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1stdb01.amer.dell.com:9092",
+        "ckfplpc1stdb02.amer.dell.com:9092",
+        "ckfpls3bstdb01.amer.dell.com:9092",
+        "ckfpls3bstdb02.amer.dell.com:9092",
+      ]
+  - "name": "TRP-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfpldurtrpb01.us.dell.com:9092",
+        "ckfpldurtrpb02.us.dell.com:9092",
+        "ckfpldurtrpb03.us.dell.com:9092",
+        "ckfpls3btrpb01.us.dell.com:9092",
+        "ckfpls3btrpb04.us.dell.com:9092",
+        "ckfpls3btrpb03.us.dell.com:9092",
+      ]
+
+  - "name": "BMG-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1bmgb01.amer.dell.com:9092",
+        "ckfplpc1bmgb02.amer.dell.com:9092",
+        "ckfplpc1bmgb03.amer.dell.com:9092",
+        "ckfplpc1bmgb04.amer.dell.com:9092",
+        "ckfplpc1bmgb05.amer.dell.com:9092",
+        "ckfplpc1bmgb06.amer.dell.com:9092",
+        "ckfpls3bbmgb01.amer.dell.com:9092",
+        "ckfpls3bbmgb02.amer.dell.com:9092",
+        "ckfpls3bbmgb03.amer.dell.com:9092",
+        "ckfpls3bbmgb04.amer.dell.com:9092",
+        "ckfpls3bbmgb05.amer.dell.com:9092",
+        "ckfpls3bbmgb06.amer.dell.com:9092",
+      ]
+
+  - "name": "SRS-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfpls3bsrsb01.amer.dell.com:9092",
+        "ckfpls3bsrsb02.amer.dell.com:9092",
+        "ckfpls3bsrsb03.amer.dell.com:9092",
+        "ckfpldursrsb01.amer.dell.com:9092",
+        "ckfpldursrsb02.amer.dell.com:9092",
+        "ckfpldursrsb03.amer.dell.com:9092",
+      ]
+
+  - "name": "CRE-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1creb01.amer.dell.com:9092",
+        "ckfplpc1creb02.amer.dell.com:9092",
+        "ckfplpc1creb03.amer.dell.com:9092",
+        "ckfpls3bcreb01.amer.dell.com:9092",
+        "ckfpls3bcreb02.amer.dell.com:9092",
+        "ckfpls3bcreb03.amer.dell.com:9092",
+      ]
+
+  - "name": "DFS-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1dfsb01.amer.dell.com:9092",
+        "ckfplpc1dfsb02.amer.dell.com:9092",
+        "ckfplpc1dfsb03.amer.dell.com:9092",
+        "ckfpls3bdfsb01.amer.dell.com:9092",
+        "ckfpls3bdfsb02.amer.dell.com:9092",
+        "ckfpls3bdfsb03.amer.dell.com:9092",
+      ]
+
+  - "name": "SCT-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1sctb001.amer.dell.com:9092",
+        "ckfplpc1sctb002.amer.dell.com:9092",
+        "ckfplpc1sctb003.amer.dell.com:9092",
+        "ckfpls3bsctb001.amer.dell.com:9092",
+        "ckfpls3bsctb002.amer.dell.com:9092",
+        "ckfpls3bsctb003.amer.dell.com:9092",
+      ]
+  - "name": "ITP-LITE-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1itpb001.amer.dell.com:9092",
+        "ckfplpc1itpb002.amer.dell.com:9092",
+        "ckfplpc1itpb003.amer.dell.com:9092",
+        "ckfpls3bitpb001.amer.dell.com:9092",
+        "ckfpls3bitpb002.amer.dell.com:9092",
+        "ckfpls3bitpb003.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-EMEA-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1itpeb01.amer.dell.com:9092",
+        "ckfplpc1itpeb02.amer.dell.com:9092",
+        "ckfplpc1itpeb03.amer.dell.com:9092",
+        "ckfplpc1itpeb04.amer.dell.com:9092",
+        "ckfpls3bitpeb01.amer.dell.com:9092",
+        "ckfpls3bitpeb02.amer.dell.com:9092",
+        "ckfpls3bitpeb03.amer.dell.com:9092",
+        "ckfpls3bitpeb04.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-APJ-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1itpab01.amer.dell.com:9092",
+        "ckfplpc1itpab02.amer.dell.com:9092",
+        "ckfplpc1itpab03.amer.dell.com:9092",
+        "ckfplpc1itpab04.amer.dell.com:9092",
+        "ckfpls3bitpab01.amer.dell.com:9092",
+        "ckfpls3bitpab02.amer.dell.com:9092",
+        "ckfpls3bitpab03.amer.dell.com:9092",
+        "ckfpls3bitpab04.amer.dell.com:9092",
+      ]
+
+  - "name": "ITP-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1itpub01.amer.dell.com:9092",
+        "ckfplpc1itpub02.amer.dell.com:9092",
+        "ckfplpc1itpub03.amer.dell.com:9092",
+        "ckfplpc1itpub04.amer.dell.com:9092",
+        "ckfpls3bitpub01.amer.dell.com:9092",
+        "ckfpls3bitpub02.amer.dell.com:9092",
+        "ckfpls3bitpub03.amer.dell.com:9092",
+        "ckfpls3bitpub04.amer.dell.com:9092",
+      ]
+
+  - "name": "PIT-EMEA-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1epitb01.amer.dell.com:9092",
+        "ckfplpc1epitb02.amer.dell.com:9092",
+        "ckfplpc1epitb03.amer.dell.com:9092",
+        "ckfpls3bepitb01.amer.dell.com:9092",
+        "ckfpls3bepitb02.amer.dell.com:9092",
+        "ckfpls3bepitb03.amer.dell.com:9092",
+      ]
+
+  - "name": "PIT-APJ-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1apitb01.amer.dell.com:9092",
+        "ckfplpc1apitb02.amer.dell.com:9092",
+        "ckfplpc1apitb03.amer.dell.com:9092",
+        "ckfpls3bapitb01.amer.dell.com:9092",
+        "ckfpls3bapitb02.amer.dell.com:9092",
+        "ckfpls3bapitb03.amer.dell.com:9092",
+      ]
+
+  - "name": "PIT-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1upitb01.amer.dell.com:9092",
+        "ckfplpc1upitb02.amer.dell.com:9092",
+        "ckfplpc1upitb03.amer.dell.com:9092",
+        "ckfpls3bupitb01.amer.dell.com:9092",
+        "ckfpls3bupitb02.amer.dell.com:9092",
+        "ckfpls3bupitb03.amer.dell.com:9092",
+      ]
+
+  - "name": "CMT-APJ-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1acmtb01.amer.dell.com:9092",
+        "ckfplpc1acmtb02.amer.dell.com:9092",
+        "ckfplpc1acmtb03.amer.dell.com:9092",
+        "ckfpls3bacmtb01.amer.dell.com:9092",
+        "ckfpls3bacmtb02.amer.dell.com:9092",
+        "ckfpls3bacmtb03.amer.dell.com:9092",
+      ]
+
+  - "name": "CMT-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1ucmtb01.amer.dell.com:9092",
+        "ckfplpc1ucmtb02.amer.dell.com:9092",
+        "ckfplpc1ucmtb03.amer.dell.com:9092",
+        "ckfpls3bucmtb01.amer.dell.com:9092",
+        "ckfpls3bucmtb02.amer.dell.com:9092",
+        "ckfpls3bucmtb03.amer.dell.com:9092",
+      ]
+
+  - "name": "CMT-EMEA-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1ecmtb01.amer.dell.com:9092",
+        "ckfplpc1ecmtb02.amer.dell.com:9092",
+        "ckfplpc1ecmtb03.amer.dell.com:9092",
+        "ckfpls3becmtb01.amer.dell.com:9092",
+        "ckfpls3becmtb02.amer.dell.com:9092",
+        "ckfpls3becmtb03.amer.dell.com:9092",
+      ]
+  - "name": "SNTL-APJ-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1pasntb1.amer.dell.com:9092",
+        "ckfplpc1pasntb2.amer.dell.com:9092",
+        "ckfplpc1pasntb3.amer.dell.com:9092",
+        "ckfpls3bpasntb1.amer.dell.com:9092",
+        "ckfpls3bpasntb2.amer.dell.com:9092",
+        "ckfpls3bpasntb3.amer.dell.com:9092",
+      ]
+
+  - "name": "SNTL-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1pusntb1.amer.dell.com:9092",
+        "ckfplpc1pusntb2.amer.dell.com:9092",
+        "ckfplpc1pusntb3.amer.dell.com:9092",
+        "ckfpls3bpusntb1.amer.dell.com:9092",
+        "ckfpls3bpusntb2.amer.dell.com:9092",
+        "ckfpls3bpusntb3.amer.dell.com:9092",
+      ]
+
+  - "name": "SNTL-EMEA-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1pesntb1.amer.dell.com:9092",
+        "ckfplpc1pesntb2.amer.dell.com:9092",
+        "ckfplpc1pesntb3.amer.dell.com:9092",
+        "ckfpls3bpesntb1.amer.dell.com:9092",
+        "ckfpls3bpesntb2.amer.dell.com:9092",
+        "ckfpls3bpesntb3.amer.dell.com:9092",
+      ]
+
+  - "name": "CUSK-APJ-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1apsab1.amer.dell.com:9092",
+        "ckfplpc1apsab2.amer.dell.com:9092",
+        "ckfplpc1apsab3.amer.dell.com:9092",
+        "ckfpls3bapsab1.amer.dell.com:9092",
+        "ckfpls3bapsab2.amer.dell.com:9092",
+        "ckfpls3bapsab3.amer.dell.com:9092",
+      ]
+
+  - "name": "CUSK-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1upsab1.amer.dell.com:9092",
+        "ckfplpc1upsab2.amer.dell.com:9092",
+        "ckfplpc1upsab3.amer.dell.com:9092",
+        "ckfpls3bupsab1.amer.dell.com:9092",
+        "ckfpls3bupsab2.amer.dell.com:9092",
+        "ckfpls3bupsab3.amer.dell.com:9092",
+      ]
+
+  - "name": "CUSK-EMEA-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1epsab1.amer.dell.com:9092",
+        "ckfplpc1epsab2.amer.dell.com:9092",
+        "ckfplpc1epsab3.amer.dell.com:9092",
+        "ckfpls3bepsab1.amer.dell.com:9092",
+        "ckfpls3bepsab2.amer.dell.com:9092",
+        "ckfpls3bepsab3.amer.dell.com:9092",
+      ]
+
+  - "name": "SNTT-AMER-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1usnpb1.amer.dell.com:9092",
+        "ckfplpc1usnpb2.amer.dell.com:9092",
+        "ckfplpc1usnpb3.amer.dell.com:9092",
+        "ckfpls3busnpb1.amer.dell.com:9092",
+        "ckfpls3busnpb2.amer.dell.com:9092",
+        "ckfpls3busnpb3.amer.dell.com:9092",
+      ]
+
+  - "name": "DID-PROD"
+    "envs": "PROD"
+    "hosts":
+      [
+        "ckfplpc1pdidb1.amer.dell.com:9092",
+        "ckfplpc1pdidb2.amer.dell.com:9092",
+        "ckfpls3bpdidb1.amer.dell.com:9092",
+        "ckfpls3bpdidb2.amer.dell.com:9092",
+      ]
